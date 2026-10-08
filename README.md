@@ -42,6 +42,129 @@ flowchart LR
 
 **How a request flows:** an Angular component calls a service, the interceptor adds the JWT, Spring Security checks the token and the role, the controller calls a service, the service uses a JPA repository, and the result goes back as JSON.
 
+## Data model
+
+```mermaid
+erDiagram
+    PRODUCT_CATEGORY ||--o{ PRODUCT : contains
+    CUSTOMER ||--o{ ORDERS : places
+    ORDERS ||--|{ ORDER_ITEM : contains
+    ORDERS ||--|| ADDRESS : "ships to"
+    ORDERS ||--|| ADDRESS : "bills to"
+    COUNTRY ||--o{ STATE : has
+
+    PRODUCT_CATEGORY {
+        bigint id PK
+        string category_name
+    }
+    PRODUCT {
+        bigint id PK
+        string sku
+        string name
+        decimal unit_price
+        int units_in_stock
+        boolean active
+        bigint category_id FK
+    }
+    CUSTOMER {
+        bigint id PK
+        string first_name
+        string last_name
+        string email
+    }
+    ORDERS {
+        bigint id PK
+        string order_tracking_number
+        int total_quantity
+        decimal total_price
+        string status
+        bigint customer_id FK
+    }
+    ORDER_ITEM {
+        bigint id PK
+        bigint product_id
+        int quantity
+        decimal unit_price
+        bigint order_id FK
+    }
+    ADDRESS {
+        bigint id PK
+        string street
+        string city
+        string country
+        string zip_code
+    }
+    USERS {
+        bigint id PK
+        string email UK
+        string password "BCrypt hash"
+        string role "USER or ADMIN"
+    }
+    COUNTRY {
+        int id PK
+        string code
+        string name
+    }
+    STATE {
+        int id PK
+        string name
+        int country_id FK
+    }
+```
+
+`USERS` holds the accounts used to log in. A customer's orders are linked to their account by email, so guests can still order without an account.
+
+## How authentication works
+
+```mermaid
+sequenceDiagram
+    actor U as User
+    participant A as Angular
+    participant S as Spring Security
+    participant API as Controller / Service
+    participant DB as MySQL
+
+    U->>A: email + password
+    A->>API: POST /api/auth/login
+    API->>DB: find user by email
+    API->>API: check password against BCrypt hash
+    API-->>A: JWT (email, role, expiry)
+    A->>A: store the token
+
+    U->>A: open "Admin · Products"
+    A->>S: GET /api/admin/products<br/>Authorization: Bearer JWT
+    S->>S: verify signature and expiry,<br/>load the user's role
+    alt role is ADMIN
+        S->>API: forward the request
+        API->>DB: read products
+        API-->>A: 200 + JSON
+    else no token or invalid token
+        S-->>A: 401 Unauthorized
+    else logged in but not ADMIN
+        S-->>A: 403 Forbidden
+    end
+```
+
+The Angular route guard only hides the admin pages. The real protection is the backend rule on `/api/admin/**`.
+
+## How an order is placed
+
+```mermaid
+sequenceDiagram
+    participant A as Angular (checkout form)
+    participant C as CheckoutController
+    participant S as CheckoutService
+    participant DB as MySQL
+
+    A->>C: POST /api/checkout/purchase<br/>customer, addresses, items
+    C->>C: if logged in, use the account email
+    C->>S: placeOrder(purchase)
+    S->>DB: load each product
+    S->>S: recompute unit prices and total<br/>(the browser's prices are ignored)
+    S->>DB: reuse the customer if the email exists,<br/>save order + items + addresses (one transaction)
+    S-->>A: order tracking number
+```
+
 ## Main API routes
 
 | Method | Route | Access |
