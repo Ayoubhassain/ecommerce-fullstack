@@ -1,0 +1,26 @@
+.login-status {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: auto;
+  margin-right: 24px;
+  font-size: 15px;
+}
+
+.login-status a,
+.login-status .btn-link {
+  color: #fff;
+  font-size: inherit;
+  line-height: inherit;
+  text-decoration: none;
+}
+
+.login-status a:hover,
+.login-status .btn-link:hover {
+  text-decoration: underline;
+}
+
+.welcome {
+  color: #fff;
+  font-weight: 600;
+}

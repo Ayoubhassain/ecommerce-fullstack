@@ -1,0 +1,13 @@
+<div class="login-status">
+  <ng-container *ngIf="user$ | async as user; else loggedOut">
+    <span class="welcome">Hello, {{ user.firstName }}</span>
+    <a routerLink="/my-orders">My orders</a>
+    <a *ngIf="user.role === 'ADMIN'" routerLink="/admin/products">Admin</a>
+    <button type="button" class="btn btn-link p-0" (click)="logout()">Log out</button>
+  </ng-container>
+
+  <ng-template #loggedOut>
+    <a routerLink="/login">Log in</a>
+    <a routerLink="/register">Sign up</a>
+  </ng-template>
+</div>

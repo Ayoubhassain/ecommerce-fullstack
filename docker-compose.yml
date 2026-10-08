@@ -1,0 +1,22 @@
+# Local MySQL database for development: docker compose up -d
+# The course scripts create the tables and sample data on the first start.
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: ecommerce-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: full-stack-ecommerce
+      MYSQL_USER: ecommerceapp
+      MYSQL_PASSWORD: ecommerceapp
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db-scripts/02-create-products.sql:/docker-entrypoint-initdb.d/02-create-products.sql:ro
+      - ./db-scripts/03-countries-and-states.sql:/docker-entrypoint-initdb.d/03-countries-and-states.sql:ro
+      - ./db-scripts/04-create-order-tables.sql:/docker-entrypoint-initdb.d/04-create-order-tables.sql:ro
+      - ./db-scripts/05-create-users.sql:/docker-entrypoint-initdb.d/05-create-users.sql:ro
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:

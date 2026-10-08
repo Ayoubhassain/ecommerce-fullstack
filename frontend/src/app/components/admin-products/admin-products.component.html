@@ -1,0 +1,57 @@
+<div class="main-content">
+  <div class="section-content section-content-p30">
+    <div class="container-fluid">
+
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+        <h3 class="m-0">Admin · Products</h3>
+        <div class="d-flex gap-2">
+          <a routerLink="/admin/orders" class="btn btn-outline-secondary">Orders</a>
+          <a routerLink="/admin/products/new" class="btn btn-primary">New product</a>
+        </div>
+      </div>
+
+      <form class="d-flex gap-2 mb-3" (ngSubmit)="onSearch()">
+        <input class="form-control" style="max-width: 320px" placeholder="Search by name"
+               [(ngModel)]="search" name="search">
+        <button class="btn btn-outline-primary" type="submit">Search</button>
+      </form>
+
+      <div *ngIf="message" class="alert alert-info">{{ message }}</div>
+
+      <table class="table table-bordered align-middle">
+        <thead>
+          <tr>
+            <th>SKU</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Active</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let product of products">
+            <td><code>{{ product.sku }}</code></td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.categoryName }}</td>
+            <td>{{ product.unitPrice | currency:'USD' }}</td>
+            <td>{{ product.unitsInStock }}</td>
+            <td>{{ product.active ? 'Yes' : 'No' }}</td>
+            <td class="text-nowrap">
+              <a [routerLink]="['/admin/products', product.id]" class="btn btn-sm btn-outline-primary me-2">Edit</a>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(product)">Delete</button>
+            </td>
+          </tr>
+          <tr *ngIf="products.length === 0">
+            <td colspan="7" class="text-center text-muted">No products found.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <ngb-pagination *ngIf="totalElements > pageSize"
+                      [(page)]="pageNumber" [pageSize]="pageSize" [collectionSize]="totalElements"
+                      [maxSize]="5" [boundaryLinks]="true" (pageChange)="load()"></ngb-pagination>
+    </div>
+  </div>
+</div>
