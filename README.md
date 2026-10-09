@@ -2,11 +2,11 @@
 
 A full stack e-commerce application: a Spring Boot REST API and an Angular front end, backed by MySQL. Customers browse and search the catalog, fill a cart and place orders. Registered users log in with a JWT and see their order history, and admins manage products and orders from a dedicated area.
 
-## Credits and my contributions
+## Background
 
-The base of this project (catalog, search, pagination, cart, checkout form and order saving) comes from the course **[Full Stack: Angular and Spring Boot](https://github.com/darbyluv2code/fullstack-angular-and-springboot)** by Chad Darby (luv2code), release 2.0.
+I first built this application on my own. After losing that code, I rebuilt it in this repository, starting from the public project of the course **[Full Stack: Angular and Spring Boot](https://github.com/darbyluv2code/fullstack-angular-and-springboot)** by Chad Darby (luv2code) for the catalog, search, cart and checkout.
 
-On top of it, I added:
+This version adds:
 
 - **Authentication:** sign up and log in with Spring Security and JWT, BCrypt-hashed passwords, USER and ADMIN roles.
 - **Admin area:** product management (list, search, create, edit, delete) and order management (list, change status), restricted to the ADMIN role on the backend and hidden by a route guard on the frontend.
