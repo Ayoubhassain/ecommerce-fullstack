@@ -2,17 +2,15 @@
 
 A full stack e-commerce application: a Spring Boot REST API and an Angular front end, backed by MySQL. Customers browse and search the catalog, fill a cart and place orders. Registered users log in with a JWT and see their order history, and admins manage products and orders from a dedicated area.
 
-## Background
+## Features
 
-I first built this application on my own. After losing that code, I rebuilt it in this repository, starting from the public project of the course **[Full Stack: Angular and Spring Boot](https://github.com/darbyluv2code/fullstack-angular-and-springboot)** by Chad Darby (luv2code) for the catalog, search, cart and checkout.
-
-This version adds:
-
+- **Catalog:** products by category, search by name, pagination.
+- **Cart and checkout:** cart, checkout form with shipping and billing addresses, order saved with a tracking number.
 - **Authentication:** sign up and log in with Spring Security and JWT, BCrypt-hashed passwords, USER and ADMIN roles.
 - **Admin area:** product management (list, search, create, edit, delete) and order management (list, change status), restricted to the ADMIN role on the backend and hidden by a route guard on the frontend.
 - **My orders:** logged-in customers see their own orders.
-- **Checkout hardening:** prices and totals are recomputed on the server from the database instead of being trusted from the browser, an existing customer is reused instead of duplicated, and new orders get the NEW status.
-- **API safety:** customers, orders and users are no longer exposed by Spring Data REST, validation errors return clear JSON messages.
+- **Secure checkout:** prices and totals are computed on the server from the database instead of being trusted from the browser, an existing customer is reused instead of duplicated, and new orders get the NEW status.
+- **API safety:** customers, orders and users are not exposed by Spring Data REST, validation errors return clear JSON messages.
 - **Integration tests:** security rules, authentication, admin CRUD and orders are tested end to end with MockMvc and an in-memory H2 database.
 - **Configuration:** database, JWT secret and admin account come from environment variables, and a Docker Compose file starts MySQL with the schema and sample data.
 
